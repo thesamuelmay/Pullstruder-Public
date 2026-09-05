@@ -1,75 +1,69 @@
 # Pullstruder
 
-Open-source CAD for the **Pullstruder**: a school-affordable, single-chassis machine that
-turns waste plastic into usable 3D-printing filament on site, so a school can close its own
-plastic loop instead of shipping waste out and buying filament back in.
+Design files for the **Pullstruder**: a school-affordable machine that turns waste plastic into
+usable 3D-printing filament on site, so a school can close its own plastic loop instead of
+shipping waste out and buying filament back in.
 
 Designed and built by **Samuel Lundgren May** as a VCE Systems Engineering project, 2026.
 
-Everything here is parametric CadQuery source plus exported geometry. Change a dimension at the
-top of the model file, re-run one command, and the whole machine rebuilds.
-
 ## What is in this repo
 
-Three design concepts were developed and evaluated. All three are published, because the two
-that were rejected are part of how the final design was chosen.
+Every part of the machine that was custom designed and 3D printed, as **3MF project files**.
 
-| Folder | Concept | Status |
+The parts were modelled in **Autodesk Fusion 360** and prepared for printing in **Bambu Studio**.
+Each `.3mf` here is the Bambu Studio project for that part: it carries the part geometry, the
+plate layout it was printed on, and the print settings actually used. Opening one shows the part
+exactly as it went to the printer.
+
+Version numbers are the real design history, not tidy-ups after the fact. Where a part has
+several versions, each one is a revision that was printed, assessed and changed.
+
+### The machine
+
+| File | Date | What it is |
 | :-- | :-- | :-- |
-| `concepts/spine-modules/` | Rigid spine with clip-on modules | ✅ **Built.** The selected design |
-| `concepts/l-fold/` | L-shaped folding chassis | Considered, rejected |
-| `concepts/stacked-deck/` | Stacked-deck layout | Considered, rejected |
+| `Systems_V2_v01` to `v12` | 27 Jul to 11 Aug 2026 | The main machine assembly, twelve revisions |
+| `Extruder_Full` | 24 May 2026 | Full extruder assembly |
+| `Extruder_Module_Redesign_v01` | 13 Jun 2026 | Extruder module after redesign |
+| `Cycloidal_Drive_v01` | 4 Sep 2026 | Cycloidal drive |
 
-Inside `concepts/spine-modules/`:
+### Bottle cutter
 
-- `cad/` — the concept-stage block model
-- `cad_detailed/` — the detailed model: real wall thicknesses, edge fillets, M3/M4 bolt holes,
-  captive hex-nut pockets, and accurate mounting-hole patterns for the bought components
-- `concept.md`, `design_decisions*.md`, `bom.md`, `qa_report.md` — the reasoning behind the
-  geometry, written up as the design developed
+| File | Date | What it is |
+| :-- | :-- | :-- |
+| `Bottle_Cutter_v02` to `v05` | 20 Mar to 4 May 2026 | Cutter body, four revisions |
+| `Bottle_Cutter_Base_v01` | 5 May 2026 | Cutter base |
+| `Bottle_Cutter_Fusion_More_Height` | 17 Aug 2026 | Taller revision |
+| `Spinning_Bottle_Cap`, `_v02` | 28 Apr, 2 May 2026 | Spinning cap that feeds the bottle through the cutter |
 
-## The 11 printed parts
+### Housings, lids and covers
 
-Every custom structural part is 3D-printable. Each is exported as both `.step` (editable CAD)
-and `.stl` (ready to slice):
+| File | Date | What it is |
+| :-- | :-- | :-- |
+| `Electrical_Lid_v01` | 17 Aug 2026 | Electrical enclosure lid |
+| `Revised_Lids_v01` | 29 May 2026 | Revised lids |
+| `Front_Cover_Screen_Revised` | 29 May 2026 | Front cover with screen cutout |
+| `Switch_Backing_Fixed_v01` | 12 Jun 2026 | Switch backing plate |
+| `Filament Catcher` | 14 Aug 2026 | Filament catcher |
 
-`spine_segment_A` · `spine_segment_B` · `splice_plate` · `cover_A` · `cover_B` ·
-`module_stripper` · `module_hotend` · `module_cooling` · `module_hall` · `winder_riser` ·
-`module_controller`
+### Test pieces
 
-All fit a 256 mm bed with at least 2.0 mm walls. The spine is about 380 mm long, longer than the bed,
-so it prints as two segments joined by a bolted splice plate.
+Printed to check a single property before committing to a full part.
 
-## Regenerating the geometry
+| File | Date | What it was testing |
+| :-- | :-- | :-- |
+| `Thread_Test v01` | 13 Mar 2026 | Printed thread fit |
+| `Housing_Curve_Test_V01` | 9 May 2026 | Curved housing wall |
+| `TestPlate_v01`, `_v02` | 21 May 2026 | Plate geometry and fit |
 
-You need [uv](https://docs.astral.sh/uv/). It fetches Python and CadQuery for you, so there is
-nothing else to install.
+## Opening the files
 
-From `concepts/spine-modules/cad_detailed/`:
+`.3mf` is an open format. Any of these will open the files:
 
-```bash
-# Rebuild every part and export STEP + STL
-uv run --python 3.12 --with cadquery python model_detailed.py out
-
-# Check the result against the nine QA gates
-uv run --python 3.12 --with cadquery python qa_check_detailed.py out/spine_detailed_assembly.step
-```
-
-The first command writes 27 files and prints `Printed parts: 11`. The second rebuilds the model
-in memory and runs gates G1 to G9, covering part validity, the overall envelope, bed fit,
-minimum wall thickness, the filament channel, STEP re-import, fastener clearances, and
-hole-pattern alignment against the real bought parts. It exits non-zero if any gate fails.
-
-The other two concepts have the same shape: `model.py` and `qa_check.py` in each `cad/` folder.
-
-## Units and conventions
-
-Millimetres throughout. The coordinate datum follows AS 1100, with the origin at the spine:
-X along the machine centreline (the direction filament travels), Y lateral, Z vertical.
-
-Bought components (stepper motor, hotend, Arduino, fans, PSU) are modelled as `PLACEHOLDER_*`
-stand-ins with accurate external envelopes and real mounting-hole positions, so the printed
-parts line up with the actual hardware.
+- **Bambu Studio** (what they were made in), OrcaSlicer, or PrusaSlicer, to see the part on its
+  print plate with the settings used
+- **Autodesk Fusion 360**, or any CAD package that imports 3MF, to work with the geometry
+- Windows **3D Viewer** or macOS **Preview**, to look at the shape without installing anything
 
 ## Licence
 
